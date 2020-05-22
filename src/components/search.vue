@@ -79,14 +79,12 @@
         <template v-if="item.id">
           <van-row class="user block-components" @click="showUserInfo(item.id)">
             <van-col span="4">
-              <!-- <template v-if="item.photo">
-                <img :src="item.photo" />
-              </template>-->
+              <!-- {{item}} -->
               <div class="photo_container" v-if="item.photo">
                 <img :src="item.photo" />
               </div>
               <template v-else>
-                <img src="../assets/timg.jpg" />
+                <img src="../assets/timg.jpg" class="photo_container" />
               </template>
             </van-col>
             <van-col span="20">

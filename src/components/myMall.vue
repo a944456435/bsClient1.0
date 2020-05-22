@@ -1,8 +1,9 @@
 <template>
   <div class="myMall">
-    <van-nav-bar left-arrow title="我的食材" @click-left="goBack"></van-nav-bar>
+    <van-nav-bar left-arrow title="我的商品" @click-left="goBack"></van-nav-bar>
+    <h4 v-if="mallAboutUser.length==0">暂时没有发现我的商品</h4>
 
-    <div class="container" v-if="mallAboutUser.length!=0">
+    <div class="container" v-else>
       <van-row v-for="(item,index) in mallAboutUser" :key="index" class="component">
         <van-row>
           <van-col :span="22" class="component_container" @click="goProductDetail(item.id)">
@@ -69,9 +70,19 @@ export default {
 };
 </script>
 <style scoped>
+.myMall {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background-color: white;
+}
 .container {
   background-color: #f2f2f2;
 }
+
 .component {
   margin: 1rem 0;
   border-radius: 0.8rem;

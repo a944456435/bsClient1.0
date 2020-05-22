@@ -12,15 +12,15 @@ export default {
   actions: {
     //查找所有的商品
     async saveOrderItem({ commit }, payload) {
-      let response = await post("/api/orderItem/save", payload);
+      let response = await post("/orderItem/save", payload);
       console.log("保存订单项信息", response);
       return response;
     },
     //查找我的商品中被人下单的信息
     async buyMyMall({ commit }) {
-      let response = await get("/api/orderItem/findAll");
+      let response = await get("/orderItem/findAll");
       commit("SET_buyMyMallInfo", response.data);
-      console.log("/api/orderItem/findAll", response);
+      console.log("/orderItem/findAll", response);
       return response;
     },
   },

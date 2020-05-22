@@ -11,7 +11,7 @@
         :on-success="uploadHandler"
         :on-error="errorUpload"
         :before-upload="beforeAvatarUpload"
-        action="/api/upload/uploadImg"
+        action="http://101.132.112.10:3000/upload/uploadImg"
       >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">
@@ -87,6 +87,12 @@ export default {
       //成功后返回首页
       this.$router.push("/");
     }
+  },
+  created() {
+    //从修改按钮处过来
+    if (this.$route.query.Recomend_id) {
+      Toast("修改");
+    }
   }
 };
 </script>
@@ -103,6 +109,7 @@ export default {
   background-color: white;
   z-index: 100;
 }
+
 .uploadVideo .text {
   text-align: left;
   margin-top: 1rem;

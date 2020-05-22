@@ -20,21 +20,21 @@ export default {
   actions: {
     //模糊查询菜谱
     async getCookbookBykeyword({ commit }, keyword) {
-      let response = await get("/api/cookbook/searchByKey", { keyword });
+      let response = await get("/cookbook/searchByKey", { keyword });
       console.log("cookbook/searchByKey", response.data);
       commit("SET_searchResluts", response.data);
       return response.data;
     },
     //模糊查询视频
     async getRecommendBykeyword({ commit }, keyword) {
-      let response = await get("/api/recommend/searchByKey", { keyword });
+      let response = await get("/recommend/searchByKey", { keyword });
       console.log("recommend/searchByKey", response.data);
       commit("SET_searchResluts", response.data);
       return response.data;
     },
     //模糊查询用户
     async getUserBykeyword({ commit }, keyword) {
-      let response = await get("/api/user/searchByKey", { keyword });
+      let response = await get("/user/searchByKey", { keyword });
       console.log("user/searchByKey", response.data);
       commit("SET_searchResluts", response.data);
       return response.data;

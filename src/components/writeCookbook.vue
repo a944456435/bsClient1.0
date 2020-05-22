@@ -23,18 +23,9 @@
         <van-row>
           <div class="category">
             菜谱类别：
-            <!-- <select v-model="category" placeholder="请选择">
-              <option
-                v-for="item in categoryObj"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></option>
-            </select>-->
-            <!-- {{categoryObj}} -->
-            <el-select v-model="category" placeholder="请选择">
+            <el-select v-model="selectCategory" placeholder="请选择">
               <el-option
-                v-for="item in categoryObj"
+                v-for="item in categorys"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id"
@@ -43,6 +34,7 @@
           </div>
         </van-row>
         <!-- 菜谱名 -->
+        {{cook}}
         <van-row>
           <p class="label">菜谱名(必填)</p>
         </van-row>
@@ -68,6 +60,8 @@
           />
         </van-row>
         <!-- 用料 -->
+        <!-- <p>ingredients{{ingredients}}</p>
+        ingre{{ingre}}-->
         <van-row>
           <p class="label">用料</p>
         </van-row>
@@ -105,6 +99,7 @@
         </van-row>
 
         <!--做法步骤表  -->
+        <!-- cookStep{{cookStep}} -->
         <van-row class="label zf_title">做法步骤(至少{{ z_num }}步)</van-row>
         <div v-for="(i, index) in z_num" :key="i">
           <van-field
@@ -157,7 +152,7 @@
 </template>
 
 <script>
-import { Notify } from "vant";
+import { Notify, Toast } from "vant";
 import { mapActions, mapState } from "vuex";
 import { upload } from "@/http/axios";
 import { getSession } from "../utils/sessionStorage";
@@ -168,44 +163,35 @@ export default {
       showPicker: false,
       xgtImgURL: "", //效果图地址
       //菜谱所有分类
-      categoryObj: {}, //[{id:1,name:'家常菜'},{id:2,name:'烘培'}]
-      category: 7, //选择的类别,默认为7，其它类型
-      // fileList: [{ url: "http://q9ar0mmzo.bkt.clouddn.com/yxrs.jpg" }],
+      selectCategory: 7, //选择的类别,默认为7，其它类型
       images: [], //步骤图数组
       cookbook: {},
       y_num: 1, //用料输入框的行量
       z_num: 1, //做法步骤框
       cook: {
-        // name: "酸辣手撕包菜", //菜谱名称
-        // detail: "这是一道家常菜！！",
         name: "",
         detail: ""
       },
       ingre: {
-        // names: ["包菜", "葱", "蒜"], //食材名称数组
-        // nums: ["750克", "适量", "3-4瓣"], //食材用量数组
         names: [],
         nums: []
       },
-      // ingre: [],
       practice: {
-        // texts: [
-        //   "包菜撕成小块后洗净沥干水分备用",
-        //   "葱和红辣椒切小段.",
-        //   "包菜炒至断生变软即好",
-        // ], //做法表的步骤说明
         texts: []
       }
     };
   },
   computed: {
-    ...mapState("cookbook", ["lastCookId"]),
-    ...mapState("category", ["categorys"])
+    ...mapState("cookbook", ["lastCookId", "newCookbook"]),
+    ...mapState("category", ["categorys"]),
+    ...mapState("ingredients", ["ingredients"]),
+    ...mapState("practice", ["cookStep"])
   },
   methods: {
-    ...mapActions("cookbook", ["toSubmitCookbook"]),
-    ...mapActions("ingredients", ["saveOrUpdateIngre"]),
-    ...mapActions("practice", ["saveOrUpdateStep"]),
+    ...mapActions("cookbook", ["toSubmitCookbook", "findCookbookById"]),
+    ...mapActions("ingredients", ["saveOrUpdateIngre", "getIngredients"]),
+    ...mapActions("practice", ["saveOrUpdateStep", "showCookStep"]),
+    ...mapActions("category", ["findAllCategory"]),
     //效果图 图片上传
     async xgtUpload() {
       let img1 = document.querySelector(".xgtImg").files[0];
@@ -220,7 +206,7 @@ export default {
 
       var formdata = new FormData();
       formdata.append("fileimg", img1);
-      let response = await upload("/api/upload/uploadImg", formdata);
+      let response = await upload("/upload/uploadImg", formdata);
       this.xgtImgURL = await response.data[0].url;
       console.log("效果图上传结果", response, this.xgtImgURL);
     },
@@ -241,7 +227,7 @@ export default {
       var formdata = new FormData();
       formdata.append("fileimg", img);
       formdata.append("imgArrIndex", i);
-      let response = await upload("/api/upload/uploadImg", formdata);
+      let response = await upload("/upload/uploadImg", formdata);
       let imgIndex = response.data[0].Sort;
       let imgUrl = response.data[0].url;
       this.images[imgIndex] = imgUrl;
@@ -261,12 +247,14 @@ export default {
       let time = new Date().valueOf();
       //拿到菜谱名
       let name = this.cook.name;
+      //菜谱id，当修改时存在
+      let id = this.cook.id;
       //描述信息
       let detail = this.cook.detail;
       //用户id通过后台session拿到
       //效果图
       let image = this.xgtImgURL;
-      let payload1 = { category_id, time, name, detail, image };
+      let payload1 = { category_id, id, time, name, detail, image };
       console.log("添加到cookbook表中的信息", payload1);
       await this.toSubmitCookbook(payload1); //等待拿到cookbook的主键id
 
@@ -336,11 +324,46 @@ export default {
     }
   },
   created() {
-    //为了解决单页面刷新，所有在app.vue中监听beforeUpload方法，把当前的store的转成js对象然后把category取出来
-    this.categoryObj = JSON.parse(
-      sessionStorage.getItem("store")
-    ).category.categorys;
-    console.log(this.categoryObj, "=-=");
+    this.findAllCategory();
+    //从修改按钮处过来
+    if (this.$route.query.Cook_id) {
+      Toast("修改");
+      //把上次过来修改的信息清空
+      this.ingre.names = [];
+      this.ingre.nums = [];
+      this.practice.texts = [];
+      this.findCookbookById(this.$route.query.Cook_id).then(() => {
+        //图片预览
+        document.querySelector(".topimg").src = this.newCookbook[0].image;
+
+        //菜谱类别
+        this.selectCategory = this.newCookbook[0].category_id || 7;
+        //菜谱名、描述、id、类别
+        this.cook = this.newCookbook[0];
+        this.cook.id = this.newCookbook[0].id;
+        this.cook.category_id = this.selectCategory;
+
+        //得到用料信息
+        this.getIngredients(this.newCookbook[0].id).then(() => {
+          this.ingredients.filter((item, index) => {
+            this.ingre.names[index] = item.name;
+            this.ingre.nums[index] = item.number;
+          });
+          //强制更新
+          this.$forceUpdate();
+        });
+
+        //得到步骤信息
+        this.showCookStep(this.newCookbook[0].id).then(() => {
+          this.cookStep.filter((item, index) => {
+            this.practice.texts[index] = item.text;
+            document.querySelector(".img").src = item.images;
+          });
+          //强制更新
+          this.$forceUpdate();
+        });
+      });
+    }
   }
 };
 </script>
@@ -353,6 +376,7 @@ export default {
   position: absolute;
   z-index: 100;
 }
+
 .xgt {
   margin: 0 auto;
 }

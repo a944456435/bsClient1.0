@@ -18,17 +18,16 @@
     <van-row v-if="loginStatus">
       <van-row class="order_container">
         <!-- 订单项 -->
-
         <van-checkbox-group v-model="result" ref="checkboxGroup" v-if="carList.length!=0">
           <van-swipe-cell v-for="(item,index) in carList" :key="index" class="item_shopCar">
-            <van-checkbox class="mycheck" :name="item.productId">
+            <van-checkbox class="mycheck" :name="item.productId" v-if="item.productImg">
               <van-card
                 class="card"
                 :num="item.number"
                 :price="item.price"
                 :desc="item.productDesc"
                 :title="item.productName"
-                :thumb="item.productImg[0]"
+                :thumb="item.productImg[0] || '../assets/timg.jpeg'"
                 @click="goProductDetails(item.productId)"
               >
                 <template #tags>
@@ -74,7 +73,6 @@ export default {
   computed: {
     ...mapState("shopCar", ["carList"]),
     ...mapState("user", ["loginStatus"]),
-
     // ...mapGetters("shopCar", ["total"]),
     getFirstImg: data => {
       data.split(";")[0];

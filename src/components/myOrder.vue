@@ -51,6 +51,16 @@ export default {
 };
 </script>
 <style scoped>
+.myOrder {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  background-color: white;
+}
+.bottom {
+  height: 0;
+}
 .container {
   background-color: #f2f2f2;
 }

@@ -72,6 +72,7 @@ export default {
   background-color: white;
   z-index: 100;
 }
+
 .category .van-card {
   text-align: left;
 }

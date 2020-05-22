@@ -3,21 +3,22 @@
     <van-nav-bar left-arrow @click-left="goBack" title="确认订单"></van-nav-bar>
     <!-- 订单信息：{{filterConfirmOrder}} -->
     <!-- {{this.ids}}///{{this.defaultAddressId}}///{{this.oneAdddress}} -->
+    <!-- {{allAddress}}{{allAddress.length==0}} -->
+    <!-- {{defaultAddressId}} -->
     <van-row class="address_tip">请选择收货地址</van-row>
     <van-row class="selectAddress">
-      <!-- <van-col :span="1">
-        <el-checkbox v-model="checked"></el-checkbox>
-      </van-col>-->
       <van-col :span="22" class="address_content" @click="toEditAddress" v-if="oneAdddress">
         <van-row>
-          <van-col :span="4">{{oneAdddress.name}}</van-col>
-          <van-col :span="12">{{oneAdddress.telphone}}</van-col>
+          <van-col :span="4" v-if="allAddress.length!=0">{{oneAdddress.name}}</van-col>
+          <van-col :span="12" v-if="allAddress.length!=0">{{oneAdddress.telphone}}</van-col>
+          <van-col :span="16" v-else>选择或添加地址</van-col>
           <van-col :span="4">
             <div class="tag_btn">默认</div>
           </van-col>
         </van-row>
         <van-row>
           <van-col
+            v-if="allAddress.length!=0"
             class="address_text"
           >{{oneAdddress.province}}{{oneAdddress.city}}{{oneAdddress.area}}{{oneAdddress.address}}</van-col>
         </van-row>
@@ -74,7 +75,7 @@ export default {
   },
   computed: {
     ...mapState("shopCar", ["carList"]),
-    ...mapState("address", ["defaultAddressId", "oneAdddress"]),
+    ...mapState("address", ["defaultAddressId", "oneAdddress", "allAddress"]),
     filterConfirmOrder: function() {
       let _this = this;
       if (this.ids && this.ids.length != 0) {
@@ -101,7 +102,6 @@ export default {
             }
           });
         }
-
         return total;
       }
     }
@@ -126,7 +126,7 @@ export default {
       //用户id通过session拿
       let total = this.total;
       let address_id = this.defaultAddressId;
-      let mall_id = 2;
+      // let mall_id=2;
       let payload = { orderTime, total, address_id };
       console.log("保存到order表的payload", payload);
       console.log("提交订单的产品信息", this.filterConfirmOrder);
@@ -140,7 +140,6 @@ export default {
         let number = item.number;
         console.log("订单提交后的order的id为", order.data.insertId);
         let payloady2 = { mall_id, number, order_id: order.data.insertId };
-        console.log("payloady2222", payloady2);
         this.saveOrderItem(payloady2);
         //把下单后的购物车清掉
         this.removeCar(item.productId);
@@ -151,10 +150,10 @@ export default {
   },
   created() {
     this.ids = this.$route.query.ids;
-    console.log(this.$route.query.ids);
-    this.getAllAddress();
-    console.log(this.defaultAddressId, "defaultAddressId");
-    this.getOneAddress(this.defaultAddressId);
+    let _this = this;
+    this.getAllAddress().then(function() {
+      _this.getOneAddress(_this.defaultAddressId);
+    });
   }
 };
 </script>

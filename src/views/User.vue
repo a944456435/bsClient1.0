@@ -1,17 +1,16 @@
 <template>
   <div class="user">
-    <!-- {{loginer}} -->
     <div class="top">
-      <div class="bground">
+      <div class="bground" @click="toEdit(loginer.id)">
         <van-row class="first">
           <van-col class="photo" span="8" v-if="loginStatus">
             <img :src="loginer.photo" v-if="loginer.photo" />
-            <img src="@/assets/timg.jpg" v-else />
+            <img src="../assets/timg.jpg" v-else />
           </van-col>
           <van-col offset="1" span="19">
             <van-row v-if="loginStatus">
               <van-row class="user_name">{{loginer.username}}</van-row>
-              <van-row class="info">
+              <van-row class="user_info">
                 <van-col v-if="loginer.description">{{loginer.description}}</van-col>
                 <van-col v-else>暂无个人说明，快去完善个人资料吧！</van-col>
               </van-row>
@@ -76,7 +75,7 @@
 <script>
 import { Toast } from "vant";
 import { getToken } from "../utils/local";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapMutations } from "vuex";
 import myCollect from "../components/myCollect";
 const coupon = {
   available: 1,
@@ -104,16 +103,21 @@ export default {
   computed: {
     ...mapState("attention", ["attentionList"]),
     ...mapState("user", ["user_info", "loginStatus", "loginer"])
+    // ...mapMutations("user", ["SET_user_info", "SET_loginer"])
   },
   methods: {
     ...mapActions("user", ["logout", "findUserById", "isLogin"]),
     ...mapActions("attention", ["showAttention"]),
     ...mapActions("order", ["findAllOrder"]),
+    ...mapMutations("shopCar", ["removeAllCar"]),
     login() {
       this.$router.push("/login");
     },
     logoutHandle() {
       this.logout();
+      // this.SET_user_info([]);
+      // this.SET_loginer([]);
+      this.removeAllCar([]);
       Toast("已经退出登陆！");
     },
     loginHandle() {
@@ -221,7 +225,6 @@ export default {
   background-image: url("../assets/bg.jpg");
   background-size: cover;
   height: 100px;
-  /* background-repeat: repeat; */
 }
 .first {
   margin-bottom: 15px;
@@ -245,7 +248,7 @@ export default {
   font-size: 16px;
   font-weight: bolder;
 }
-.info {
+.user_info {
   margin-top: 8px;
   height: 40px;
 }
@@ -256,7 +259,7 @@ export default {
   text-overflow: ellipsis; /* 溢出用省略号*/
   -webkit-box-orient: vertical; /*伸缩盒子的子元素排列：从上到下*/
 }
-.info > .van-col {
+.user_info > .van-col {
   text-indent: 2em;
   text-align: left;
   padding: 4px;

@@ -7,7 +7,6 @@
 
       <div class="video" v-if="video_info.recommend">
         <!-- controls autoplay -->
-
         <video ref="video" autoplay @timeupdate="timeupdate" :src="video_info.recommend.resource">
           <!-- <source type="video/mp4" /> -->
         </video>
@@ -21,7 +20,13 @@
       <div class="title">{{ video_info.recommend.title }}</div>
       <div class="tip">精彩评论会被优先展示</div>
       <div class="progressBar">
-        <van-progress color="#ee0a24" :percentage="curtime" stroke-width="2" pivot-text />
+        <van-progress
+          color="#ee0a24"
+          v-if="curtime"
+          :percentage="curtime"
+          stroke-width="2"
+          pivot-text
+        />
       </div>
       <!-- 查询是否收藏了{{curUserFavoriteLen}} -->
       <template v-if="!video_info.user.photo">
@@ -44,6 +49,9 @@
             <img src="../assets/like-0.png" />
           </template>
         </div>
+        <div class="share">
+          <van-icon name="share" size="40" />
+        </div>
         <div class="commont">
           <van-icon name="more" size="40" @click="showCommont(video_info.recommend.id)" />
         </div>
@@ -63,14 +71,20 @@
               class="commontBlock"
             >
               <van-col span="5">
-                <div class="commontPhoto">
+                <div class="commontPhoto" v-if="item.user.photo">
+                  <img :src="item.user.photo" />
+                </div>
+                <div class="commontPhoto" v-else>
                   <img src="../assets/timg.jpg" />
                 </div>
               </van-col>
-              <van-col class="info">
+              <van-col class="info" span="16">
                 <van-row>{{item.user.username}}</van-row>
                 <van-row>{{item.comment.content}}</van-row>
                 <van-row>{{item.comment.time|date}}</van-row>
+              </van-col>
+              <van-col>
+                <van-icon name="like" />
               </van-col>
             </van-row>
             <van-row class="commentInput">
@@ -347,7 +361,7 @@ export default {
   width: 2.5rem;
   height: 2.5rem;
   right: 30px;
-  bottom: 170px;
+  bottom: 190px;
   background-color: #000;
   overflow: hidden;
 }
@@ -356,11 +370,11 @@ export default {
   height: 100%;
   object-fit: contain;
 }
-/* .conversion {
+.share {
   position: absolute;
   right: 30px;
-  bottom: 170px;
-} */
+  bottom: 135px;
+}
 .commont {
   position: absolute;
   right: 30px;
@@ -383,14 +397,14 @@ export default {
   margin-left: 0.2rem;
   width: 3rem;
   height: 3rem;
-  /* overflow: hidden; */
+  overflow: hidden;
   border: 1px solid #ccc;
   border-radius: 50%;
 }
 .commontPhoto > img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 .commontPeal .info {
   font-size: 0.8rem;

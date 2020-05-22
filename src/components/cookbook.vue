@@ -2,12 +2,8 @@
   <div class="cookbook" @click="goPractice(data.cookbook.id)">
     <!-- {{ data }} -->
     <div class="img">
-      <template v-if="data.cookbook.image">
-        <img :src="data.cookbook.image" />
-      </template>
-      <template v-else>
-        <img src="../assets/timg.jpg" />
-      </template>
+      <img v-if="data.cookbook.image" :src="data.cookbook.image" />
+      <img v-else src="../assets/timg.jpg" />
     </div>
     <van-row class="title">
       <van-col offset="1">{{ data.cookbook.name }}</van-col>
@@ -19,10 +15,10 @@
       <van-col offset="1">{{ data.cookbook.time | date }}</van-col>
     </van-row>
     <van-row class="bottom-cook">
-      <van-col offset="1" class="photo" span="3" v-if="!data.user.photo">
+      <van-col offset="1" class="photo" span="5" v-if="!data.user.photo">
         <img src="../assets/timg.jpg" />
       </van-col>
-      <van-col offset="1" class="photo" span="5">
+      <van-col offset="1" class="photo" span="5" v-else>
         <img :src="data.user.photo" />
       </van-col>
       <van-col span="12" class="username text_ellipsis">{{ data.user.username }}</van-col>
@@ -83,6 +79,7 @@ export default {
 }
 .detail {
   text-indent: 2em;
+  height: 33px;
 }
 .bottom-cook {
   padding-bottom: 8px;

@@ -24,21 +24,21 @@ export default {
   actions: {
     //查找所有的商品
     async getAllMall({ commit }) {
-      let response = await get("/api/mall/findAll");
+      let response = await get("/mall/findAll");
       commit("SET_allMall", response.data);
       console.log("all mall", response);
       return response;
     },
     //查找用户的所有的商品
     async getAllMallAboutUser({ commit }) {
-      let response = await get("/api/mall/findMallByUserId");
+      let response = await get("/mall/findMallByUserId");
       commit("SET_mallAboutUser", response.data);
       console.log("findMallByUserId", response);
       return response;
     },
     //根据id查找对应商品
     async getMallById({ commit }, id) {
-      let response = await get("/api/mall/findById", { id });
+      let response = await get("/mall/findById", { id });
       // 为每个产品添加一个number属性（购物后的维护）
       response.data[0].number = 0;
       console.log("在得到产品时加入一个数量属性", response.data[0]);
@@ -47,18 +47,18 @@ export default {
     },
     //根据id查找商品的评论
     async getCommentByMallId({ commit }, id) {
-      let response = await get("/api/mall/findCommentById", { id });
+      let response = await get("/mall/findCommentById", { id });
       commit("SET_commentAboutOneMall", response.data);
       return response;
     },
     //删除商品id删除商品
     async deleteMallById({ dispatch }, id) {
-      let response = await get("/api/mall/deleteById", { id });
+      let response = await get("/mall/deleteById", { id });
       return response;
     },
     //新增商品
     async saveOrUpdateMall({ commit }, payload) {
-      let response = await post("/api/mall/saveOrUpdate", payload);
+      let response = await post("/mall/saveOrUpdate", payload);
       return response;
     },
   },

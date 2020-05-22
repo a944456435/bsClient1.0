@@ -14,7 +14,7 @@
           :key="item.id"
           @click="showUserInfo(item.id)"
         >
-          <van-col span="8">
+          <van-col span="6">
             <template v-if="item.photo">
               <img :src="item.photo" />
             </template>
@@ -22,11 +22,15 @@
               <img src="../assets/timg.jpg" />
             </template>
           </van-col>
-          <van-col>
+          <van-col span="16">
             <van-row class="username">
               <van-col>{{ item.username }}</van-col>
               <van-col class="btn">
-                <van-button type="danger" size="mini" @click="cancelAttentionHandle(item.id)">取消关注</van-button>
+                <van-button
+                  type="danger"
+                  size="mini"
+                  @click.stop="cancelAttentionHandle(item.id)"
+                >取消关注</van-button>
               </van-col>
             </van-row>
             <van-row class="faninfo">
@@ -35,7 +39,7 @@
               <van-col>{{ item.occupation }}</van-col>
             </van-row>
             <van-row class="time">{{ item.registrationTime | date }}</van-row>
-            <van-row class="faninfo">个人说明：{{ item.description }}</van-row>
+            <van-row class="description text_ellipsis">个人说明：{{ item.description }}</van-row>
           </van-col>
         </van-row>
       </van-tab>
@@ -71,7 +75,7 @@
                         <el-button
                           type="text"
                           class="button"
-                          @click="cancelCookbookHandle(item.id)"
+                          @click.stop="cancelCookbookHandle(item.id)"
                         >删除</el-button>
                       </div>
                     </div>
@@ -105,7 +109,7 @@
                         <el-button
                           type="text"
                           class="button"
-                          @click="cancelRecommendHandle(item.id)"
+                          @click.stop="cancelRecommendHandle(item.id)"
                         >删除</el-button>
                       </div>
                     </div>
@@ -219,8 +223,10 @@ export default {
   right: 0;
   margin: auto;
   background-color: white;
-  /* z-index: 100; */
+  z-index: 100;
+  overflow: hidden;
 }
+
 .mycard {
   text-align: left;
 }

@@ -11,7 +11,7 @@
         name="files"
         :on-success="uploadHandler"
         :on-error="errorUpload"
-        action="/api/upload/uploadImgs"
+        action="http://101.132.112.10:3000/upload/uploadImgs"
       >
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">
@@ -130,6 +130,7 @@ export default {
   background-color: white;
   z-index: 100;
 }
+
 .uploadVideo .text {
   text-align: left;
   margin-top: 1rem;

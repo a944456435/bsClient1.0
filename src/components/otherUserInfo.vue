@@ -54,8 +54,8 @@
                   </video>
                   <i class="el-icon-video-play" style="fontSize:2rem"></i>
                 </div>
-                <div style="padding: 14px;">
-                  <span>{{ item.title }}</span>
+                <div style="padding: 14px;height:50px">
+                  <span class="text_ellipsis">{{ item.title }}</span>
                   <div class="bottom clearfix">
                     <time class="time">{{ item.time | date }}</time>
                   </div>
@@ -70,7 +70,7 @@
           </el-row>
           <el-row :gutter="20" class="myrow">
             <!-- {{myCookbook}} -->
-            <el-col :span="12" v-for="(item, index) in cookbook" :key="index">
+            <el-col :span="11" v-for="(item, index) in cookbook" :key="index">
               <el-card :body-style="{ padding: '0px' }">
                 <div class="cp_img">
                   <img
@@ -82,7 +82,7 @@
                   <img src="../assets/timg.jpg" v-else class="image" @click="goPractice(item.id)" />
                 </div>
 
-                <div style="padding: 14px;">
+                <div style="padding: 12px;height:40px">
                   <span>{{ item.name }}</span>
                   <div class="bottom clearfix">
                     <time class="time">{{ item.detail }}</time>
@@ -275,7 +275,7 @@ export default {
 .cp_img > img {
   height: 100%;
   width: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 .clearfix:before,
 .clearfix:after {
@@ -287,6 +287,14 @@ export default {
   clear: both;
 }
 .el-card {
-  margin-top: 12px;
+  margin-bottom: 22px;
+  font-size: 0.8rem;
+}
+.text_ellipsis {
+  display: -webkit-box; /*作为弹性伸缩盒子模型显示*/
+  -webkit-line-clamp: 2; /*显示的行数；如果要设置2行加...则设置为2*/
+  overflow: hidden;
+  text-overflow: ellipsis; /* 溢出用省略号*/
+  -webkit-box-orient: vertical; /*伸缩盒子的子元素排列：从上到下*/
 }
 </style>

@@ -97,6 +97,14 @@ export default {
 };
 </script>
 <style scoped>
+#push {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto;
+}
 .date_container {
   margin: 0 2rem;
 }
@@ -110,11 +118,11 @@ export default {
 }
 .icon {
   font-size: 60px;
+  animation: myfirst 2s infinite;
 }
 .text {
   padding-top: 9rem;
   margin: 0 4rem;
-  /* background-color: blueviolet; */
 }
 .bottom {
   margin: 9rem 1.4rem 0;
@@ -125,5 +133,31 @@ export default {
   background-color: burlywood;
   display: flex;
   align-items: center;
+  color: white;
+}
+.block:hover {
+  animation: myblock 1s infinite;
+}
+@keyframes myfirst {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  50% {
+    transform: translate(0px, -10px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+@keyframes myblock {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  50% {
+    transform: translate(0px, -10px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
 }
 </style>

@@ -20,38 +20,39 @@ export default {
   },
   actions: {
     async getRecommend({ commit }) {
-      let response = await get("/api/recommend/findAll");
+      let response = await get("/recommend/findAll");
       commit("SET_Recommend", response.data);
       console.log(response.data);
       return response.data;
     },
     async saveOrUpdateRecommend({ commit }, payload) {
-      let response = await post("/api/recommend/saveOrUpdate", payload);
-      console.log("/api/recommend/saveOrUpdate", response);
+      let response = await post("/recommend/saveOrUpdate", payload);
+      console.log("/recommend/saveOrUpdate", response);
       return response;
     },
     //查找我的视频  //不用输入用户id，从session中拿
     async findMyRecommend({ commit }, id) {
-      let response = await get("/api/recommend/findById", { id });
-      console.log("recommend/findById", response.data);
+      console.log("查找我的视频的用户id", id);
+      let response = await get("/recommend/findById", { id });
+      console.log("recommend/findById", response);
       commit("SET_myRecommend", response.data);
       return response.data;
     },
     //删除我的全部视频
     async deleteMyRecommend({ dispatch }) {
-      let response = await get("/api/recommend/delteALLById");
+      let response = await get("/recommend/delteALLById");
       dispatch("findMyRecommend");
       return response.data;
     },
     //删除我的某个视频
     async deleteMyOneRecommend({ dispatch }, id) {
-      let response = await get("/api/recommend/delteById", { id });
+      let response = await get("/recommend/delteById", { id });
       dispatch("findMyRecommend");
       return response.data;
     },
     //查找我的收藏（视频）
     async getMyFavoriteByRecommend({ commit }) {
-      let response = await get("/api/recommend/getMyFavoriteByRecommend");
+      let response = await get("/recommend/getMyFavoriteByRecommend");
       commit("SET_myFavoriteRecommend", response.data);
       console.log("我收藏的视频--", response.data);
       return response.data;

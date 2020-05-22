@@ -16,20 +16,20 @@ export default {
   actions: {
     async showAttention({ commit }) {
       //后台通过session解析出有没有id，这不用传参数
-      let response = await get("/api/attention/findById");
+      let response = await get("/attention/findById");
       commit("SET_attentionList", response.data);
-      console.log("/api/attention/findById", response.data);
+      console.log("/attention/findById", response.data);
       return response.data;
     },
     //取消关注，删除我的关注
     async cancelAttention({ commit }, id) {
-      let response = await get("/api/attention/deleteById", { fans_id: id });
+      let response = await get("/attention/deleteById", { fans_id: id });
       console.log("/api/attention/deleteById", response.data);
       return response.data;
     },
     //查看登陆的用户是否已经对当前作品用户进行了关注
     async findIsAttention({ commit }, id) {
-      let response = await get("/api/attention/findIsAttention", {
+      let response = await get("/attention/findIsAttention", {
         fans_id: id,
       });
       console.log("findIsAttention--", response.data);
@@ -43,7 +43,7 @@ export default {
     },
     //添加关注用户
     async saveAttention({ commit }, id) {
-      let response = await get("/api/attention/saveAttention", { fans_id: id });
+      let response = await get("/attention/saveAttention", { fans_id: id });
       console.log("/api/attention/saveAttention", response.data);
       return response.data;
     },

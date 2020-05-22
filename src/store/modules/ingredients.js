@@ -13,16 +13,16 @@ export default {
   actions: {
     //得到某个菜谱的用料信息
     async getIngredients({ commit }, id) {
-      let response = await get("/api/ingredients/findById", { id });
+      let response = await get("/ingredients/findById", { id });
       commit("SET_ingredients", response.data);
       console.log("用料：", response.data);
       return response;
     },
     //用料信息的更新
     async saveOrUpdateIngre({ commit }, payload) {
-      console.log("/api/ingredients/saveOrUpdate  payload", payload);
-      let response = await post("/api/ingredients/saveOrUpdate", { payload });
-      console.log("/api/ingredients/saveOrUpdate", response.data);
+      console.log("/ingredients/saveOrUpdate  payload", payload);
+      let response = await post("/ingredients/saveOrUpdate", { payload });
+      console.log("/ingredients/saveOrUpdate", response.data);
       return response;
     },
   },

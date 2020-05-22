@@ -12,13 +12,13 @@ export default {
   actions: {
     //保存订单
     async saveOrder({ commit }, payload) {
-      let response = await post("/api/order/save", payload);
+      let response = await post("/order/save", payload);
       console.log("all order", response);
       return response;
     },
     //查找用户的所有订单信息
     async findAllOrder({ commit }) {
-      let response = await get("/api/order/findAll");
+      let response = await get("/order/findAll");
       commit("SET_allOrder", response.data);
       return response;
     },

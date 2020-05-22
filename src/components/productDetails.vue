@@ -40,77 +40,83 @@
       </van-col>
       <van-col :span="12" class="comment_more">更多</van-col>
     </van-row>
-    <van-row class="comment_content" v-for="(item,index) in commentAboutOneMall" :key="index">
-      <van-row>
-        <van-col class="photo">
-          <el-avatar :src="item.photo"></el-avatar>
-        </van-col>
-        <van-col class="photo_right">
-          <van-row>{{item.username}}</van-row>
-          <van-row>
-            <van-icon name="location-o" />
-            {{item.city}}
-          </van-row>
-        </van-col>
-        <van-col class="comment_time">{{item.time | date}}</van-col>
-      </van-row>
-      <van-row class="comment_text">{{item.content}}</van-row>
-    </van-row>
 
-    <!-- 评论面板 -->
-    <van-row>
-      <van-action-sheet v-model="isShow" title="发布评论" class="commontPeal">
-        <!-- 发表新评论 -->
-        <van-row class="commentInput">
-          <van-cell-group>
-            <van-field v-model="mycomment" placeholder="快发表你的看法吧！" />
-          </van-cell-group>
-          <van-row>
-            <van-col :span="6" :offset="18">
-              <van-button round class="emit" @click="emit">发送</van-button>
-            </van-col>
-          </van-row>
-        </van-row>
-      </van-action-sheet>
-    </van-row>
-    <!-- 点击购物车时弹出抽屉 -->
-    <el-drawer :visible.sync="drawer" direction="btt" ref="drawer" :before-close="handleClose">
-      <van-row class="drawer_content">
-        <van-row class="goods">
-          <van-col class="goods_img_container">
-            <el-image style="width: 100%; height: 100%" :src="this.images[0]" fit="contain ">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline"></i>
-              </div>
-            </el-image>
+    <van-row class="comment_container">
+      <van-row class="comment_content" v-for="(item,index) in commentAboutOneMall" :key="index">
+        <van-row>
+          <van-col class="photo">
+            <el-avatar :src="item.photo"></el-avatar>
           </van-col>
-          <van-col>
-            <van-row class="goods_name">{{oneMall.name}}</van-row>
+
+          <van-col class="photo_right">
+            <van-row>{{item.username}}</van-row>
             <van-row>
-              <van-col class="p_price2">￥{{oneMall.price}}{{oneMall.unit}}</van-col>
-              <van-col
-                class="o_price2"
-                v-if="oneMall.original_price"
-              >￥{{oneMall.original_price}}{{oneMall.unit}}</van-col>
+              <van-icon name="location-o" />
+              {{item.city}}
             </van-row>
           </van-col>
+          <van-col class="comment_time">{{item.time | date}}</van-col>
         </van-row>
-        <van-row class="good_num">
-          <van-col :span="12" class="num_text">购买数量</van-col>
-          <van-col :span="12" class="num_inpNum">
-            <el-input-number
-              size="mini"
-              :min="0"
-              v-model="oneMall.number"
-              @change="numberChangeHandler(oneMall)"
-            ></el-input-number>
-          </van-col>
-        </van-row>
-        <van-row class="goods_btn">
-          <el-button type="primary" round @click="toConfirmOrderHandler">加入购物车</el-button>
-        </van-row>
+        <van-row class="comment_text">{{item.content}}</van-row>
       </van-row>
-    </el-drawer>
+
+      <!-- 评论面板 -->
+      <van-row>
+        <van-action-sheet v-model="isShow" title="发布评论" class="commontPeal">
+          <!-- 发表新评论 -->
+          <van-row class="commentInput">
+            <van-cell-group>
+              <van-field v-model="mycomment" placeholder="快发表你的看法吧！" />
+            </van-cell-group>
+            <van-row>
+              <van-col :span="6" :offset="18">
+                <van-button round class="emit" @click="emit">发送</van-button>
+              </van-col>
+            </van-row>
+          </van-row>
+        </van-action-sheet>
+      </van-row>
+      <!-- 点击购物车时弹出抽屉 -->
+      <el-drawer :visible.sync="drawer" direction="btt" ref="drawer" :before-close="handleClose">
+        <van-row class="drawer_content">
+          <van-row class="goods">
+            <van-col class="goods_img_container">
+              <el-image style="width: 100%; height: 100%" :src="this.images[0]" fit="contain ">
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline"></i>
+                </div>
+              </el-image>
+            </van-col>
+            <van-col>
+              <van-row class="goods_name">{{oneMall.name}}</van-row>
+              <van-row>
+                <van-col class="p_price2">￥{{oneMall.price}}{{oneMall.unit}}</van-col>
+                <van-col
+                  class="o_price2"
+                  v-if="oneMall.original_price"
+                >￥{{oneMall.original_price}}{{oneMall.unit}}</van-col>
+              </van-row>
+            </van-col>
+          </van-row>
+          <van-row class="good_num">
+            <van-col :span="12" class="num_text">购买数量</van-col>
+            <van-col :span="12" class="num_inpNum">
+              <keep-alive>
+                <el-input-number
+                  size="mini"
+                  :min="0"
+                  v-model="oneMall.number"
+                  @change="numberChangeHandler(oneMall)"
+                ></el-input-number>
+              </keep-alive>
+            </van-col>
+          </van-row>
+          <van-row class="goods_btn">
+            <el-button type="primary" round @click="toConfirmOrderHandler">加入购物车</el-button>
+          </van-row>
+        </van-row>
+      </el-drawer>
+    </van-row>
     <!-- 底部购买栏 -->
     <van-goods-action>
       <van-goods-action-icon icon="chat-o" text="评论" @click="showCommont" />
@@ -176,6 +182,7 @@ export default {
           : "",
         number: val.number
       };
+      this.number = val.number;
     },
     //加入购物车
     async toConfirmOrderHandler() {
@@ -183,13 +190,13 @@ export default {
       await this.isLogin();
       if (this.loginStatus) {
         console.log(this.number, "==");
-        // if (this.number != 0) {
-        this.addShopCar(this.orderLine);
-        this.orderLine = {};
-        this.drawer = false;
-        // } else {
-        //   Toast("请选择数量");
-        // }
+        if (this.number != 0) {
+          this.addShopCar(this.orderLine);
+          this.orderLine = {};
+          this.drawer = false;
+        } else {
+          Toast("请选择数量");
+        }
       } else {
         this.$router.push("/login");
       }
@@ -247,6 +254,10 @@ export default {
   margin: auto;
   background-color: white;
   z-index: 100;
+}
+
+.comment_container {
+  margin-bottom: 50px;
 }
 .my-swipe .van-swipe-item {
   color: #fff;

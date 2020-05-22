@@ -3,7 +3,7 @@
     <!-- {{data}} -->
     <div class="lists_mp4">
       <van-row>
-        <van-col span="24">
+        <van-col span="24" class="video_container">
           <video>
             <source :src="data.recommend.resource" type="video/mp4" />
           </video>
@@ -54,9 +54,9 @@ export default {
 
 <style scoped>
 .recommend {
-  margin: 0 0.1rem;
+  margin: 0 0.2rem;
   margin-bottom: 30px;
-  width: 48%;
+  width: 46%;
   overflow: hidden;
   text-align: left;
   background-color: white;
@@ -69,10 +69,14 @@ export default {
   position: relative;
 }
 .lists_mp4 > .van-row:first-child {
-  max-height: 300px;
-  max-width: 350px;
+  height: 150px;
+  width: 280px;
   overflow: hidden;
   margin: 0 auto;
+}
+.lists_mp4 .video_container {
+  height: 150px;
+  width: 280px;
 }
 .lists_mp4 video {
   width: 100%;

@@ -24,13 +24,13 @@ export default {
   actions: {
     //添加收藏
     async saveFavorite({ commit }, payload) {
-      let response = await get("/api/favorite/saveFavorite", payload);
+      let response = await get("/favorite/saveFavorite", payload);
       console.log("saveFavorite", response);
       return response;
     },
     //查看当前用户是否收藏视频或菜谱
     async findIsFavorite({ commit }, payload) {
-      let response = await get("/api/favorite/findById", payload);
+      let response = await get("/favorite/findById", payload);
       commit("SET_curUserFavorite", response.data);
       console.log("findById", response.data); //response.data>0时，已收藏
       let statu = response.data.length == 0 ? false : true;
@@ -39,19 +39,19 @@ export default {
     },
     //取消收藏
     async cancelFavorite({ commit, dispath }, payload) {
-      let response = await get("/api/favorite/deleteById", payload);
+      let response = await get("/favorite/deleteById", payload);
       return response.data;
     },
     //得到当前视频或者菜谱的收藏总数
     async countFavorite({ commit }, payload) {
-      let response = await get("/api/favorite/getCountFavorite", payload);
+      let response = await get("/favorite/getCountFavorite", payload);
       commit("SET_favoriteNum", response.data.length);
       console.log("getCountFavorite--", response.data.length);
       return response.data;
     },
     //查找当前用户的收藏（菜单）
     async getMyFavoriteByCookbook({ commit }) {
-      let response = await get("/api/favorite/getMyFavoriteByCookbook");
+      let response = await get("/favorite/getMyFavoriteByCookbook");
       commit("SET_myFavoriteCookbook", response.data);
       console.log("我收藏的菜单--", response.data);
       return response.data;

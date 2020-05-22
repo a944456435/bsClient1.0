@@ -1,7 +1,7 @@
 <template>
   <div id="practice">
     <van-row class="top">
-      <van-nav-bar left-arrow @click-left="goBack"></van-nav-bar>
+      <van-nav-bar left-arrow @click-left="goBack" title="菜谱详情"></van-nav-bar>
     </van-row>
     <van-row>
       <h4>效果图</h4>
@@ -12,32 +12,36 @@
     <van-row class="xgt" v-else>
       <van-image width="100%" height="300" :src="tempImg" />
     </van-row>
-    <!-- {{ cookbook }} -->
-    <van-row class="name">
+    <van-row class="name" v-if="cookbook[0]">
       <h1>{{ cookbook[0].name }}</h1>
     </van-row>
-    <van-row class="detail">{{ cookbook[0].detail }}</van-row>
-    <van-row>
-      <van-col :span="8">
+    <van-row class="detail" v-if="cookbook[0]">
+      <van-col>{{ cookbook[0].detail }}</van-col>
+    </van-row>
+    <van-row @click="showUserInfo(otherInfo[0].id)" v-if="otherInfo[0]">
+      <van-col :span="5">
         <el-avatar :size="50" :src="otherInfo[0].photo"></el-avatar>
       </van-col>
-      <van-col :span="8">
+      <van-col :span="14">
         <van-row class="user_name">{{otherInfo[0].username}}</van-row>
         <van-row class="desc">简介:{{otherInfo[0].description}}</van-row>
       </van-col>
-      <van-col :span="8">
+      <van-col>
         <van-button
           v-if="alreadyAttention"
           type="primary"
           size="mini"
           @click="addAttention(otherInfo[0].id)"
         >关注</van-button>
-        <van-button v-else type="primary" size="mini" @click="addAttention(otherInfo[0].id)">取消关注</van-button>
+        <van-button
+          v-else
+          type="primary"
+          size="mini"
+          @click.stop="addAttention(otherInfo[0].id)"
+        >已关注</van-button>
       </van-col>
     </van-row>
-    <!-- {{otherInfo}} -->
     <h3>用料表</h3>
-    <!-- {{ ingredients }} -->
 
     <template v-if="ingredients.lenght != 0">
       <van-row v-for="item in ingredients" :key="item.id" class="yb">
@@ -46,16 +50,13 @@
       </van-row>
     </template>
 
-    <template></template>
     <h3>做法表</h3>
-    <!-- {{ tempImg }} -->
-    <!-- {{ cookStep }} -->
     <template v-if="cookStep.length == 0">
       <h5>详情做法，敬请期待！！</h5>
     </template>
     <!-- 具体做法如下 -->
     <template>
-      <div v-for="item in cookStep" :key="item.step * Math.random()" class="step">
+      <div v-for="(item,index) in cookStep" :key="index" class="step">
         <p>
           <i>{{ item.step }}.</i>
           {{ item.text }}
@@ -89,20 +90,22 @@
             <h4>暂时无评论！</h4>
           </van-row>
 
-          <van-row
-            v-for="item in commentByCookbookId"
-            :key="item.comment.id * Math.random()"
-            class="commontBlock"
-          >
+          <van-row v-for="(item,index) in commentByCookbookId" :key="index" class="commontBlock">
             <van-col span="5">
-              <div class="commontPhoto">
+              <div class="commontPhoto" v-if="item.user.photo">
+                <img :src="item.user.photo" />
+              </div>
+              <div class="commontPhoto" v-else>
                 <img src="../assets/timg.jpg" />
               </div>
             </van-col>
-            <van-col class="info">
+            <van-col class="info" :span="16">
               <van-row>{{ item.user.username }}</van-row>
               <van-row>{{ item.comment.content }}</van-row>
               <van-row>{{ item.comment.time|date }}</van-row>
+            </van-col>
+            <van-col>
+              <van-icon name="like" />
             </van-col>
           </van-row>
           <!-- 发表新评论 -->
@@ -165,6 +168,18 @@ export default {
           }
         });
     },
+    //进入个人详细信息
+    async showUserInfo(id) {
+      await this.isLogin();
+      if (this.loginStatus) {
+        this.$router.push({
+          path: "/otherUserInfo",
+          query: { id }
+        });
+      } else {
+        this.$router.push("/login");
+      }
+    },
     //判断当前用户是否已经关注过
     findIsAttentionHandle() {
       let fans_id = this.otherInfo[0].id;
@@ -172,7 +187,7 @@ export default {
     },
     //开始关注该用户
     async addAttention(id) {
-      // console.log("需要关注用户的id", id);
+      console.log("需要关注用户的id", id);
       await this.isLogin();
       if (this.loginStatus) {
         this.saveAttention(id);
@@ -270,8 +285,9 @@ export default {
     //初始化判断当前用户是否已经收藏该菜谱
     this.isFavoriteHandle();
     //查找当前的菜谱信息，然后再查找该菜谱的用户
-    this.findCookbookById(this.$route.query.id);
-    this.getUserById(this.cookbook[0].user_id);
+    this.findCookbookById(this.$route.query.id).then(() => {
+      this.getUserById(this.cookbook[0].user_id || "");
+    });
   }
 };
 </script>
@@ -304,9 +320,10 @@ export default {
   padding: 0;
 }
 .detail {
+  font-size: 0.9rem;
   text-align: left;
   text-indent: 2em;
-  margin: 0.3rem;
+  margin: 0.5rem 1.5rem;
 }
 .user_name {
   text-align: left;
@@ -322,6 +339,9 @@ export default {
   height: 1.8rem;
   line-height: 1.8rem;
   border-bottom: 1px solid #ccc;
+}
+#practice .step {
+  margin: 0 0.8rem;
 }
 #practice .step img {
   max-width: 100%;
@@ -355,14 +375,14 @@ export default {
   margin-left: 0.2rem;
   width: 3rem;
   height: 3rem;
-  /* overflow: hidden; */
+  overflow: hidden;
   border: 1px solid #ccc;
   border-radius: 50%;
 }
 .commontPhoto > img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 .commontPeal .info {
   font-size: 0.8rem;

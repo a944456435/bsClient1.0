@@ -14,7 +14,7 @@
       </van-row>
     </van-sticky>
     <!-- <p class="title">市集经典</p> -->
-    <el-row>
+    <el-row class="mall_container">
       <el-col
         :span="10"
         class="com-block"
@@ -100,6 +100,9 @@ export default {
   height: 8rem;
   width: 100%;
   object-fit: counter-reset;
+}
+.mall_container {
+  margin-bottom: 60px;
 }
 .content_text {
   height: 2.5rem;

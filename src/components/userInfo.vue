@@ -1,28 +1,27 @@
 <template>
-  <div class="userInfo">
+  <div id="userInfo">
     <van-row>
       <van-nav-bar left-arrow @click-left="goBack" />
     </van-row>
-    <!-- {{ user_info }} -->
     <van-row class="top">
       <van-col span="8">
-        <template v-if="user_info[0].photo">
-          <img :src="user_info[0].photo" />
+        <template v-if="user_info.photo">
+          <img :src="user_info.photo" />
         </template>
         <template v-else>
           <img src="../assets/timg.jpg" />
         </template>
       </van-col>
       <van-col>
-        <van-row class="username">{{ user_info[0].username }}</van-row>
+        <van-row class="username">{{ user_info.username }}</van-row>
         <van-row class="faninfo">{{ myRecommend.length }}视频 {{ myCookbook.length }}菜谱</van-row>
-        <van-row class="time">{{ user_info[0].registrationTime | alldate }}加入</van-row>
+        <van-row class="time">{{ user_info.registrationTime | alldate }}加入</van-row>
         <van-row>
           <van-button
             type="danger"
             size="small"
             class="edit_btn"
-            @click="editUser(user_info[0].id)"
+            @click="editUser(user_info.id)"
           >编辑资料</van-button>
         </van-row>
       </van-col>
@@ -33,8 +32,7 @@
           <el-row v-if="myRecommend.length == 0">
             <h4>没有发现我的视频，发去发布吧！</h4>
           </el-row>
-          <el-row>
-            <!-- {{myRecommend}} -->
+          <el-row class="myrow">
             <el-col
               class="block_com"
               :span="11"
@@ -44,7 +42,7 @@
             >
               <el-card :body-style="[ {padding: '0px'} ]">
                 <div class="video_container">
-                  <video class="image" @click="goShow(item.id)">
+                  <video class="image mp4" @click="goShow(item.id)">
                     <source :src="item.resource" />
                   </video>
                   <i class="el-icon-video-play" style="fontSize:2rem"></i>
@@ -52,6 +50,11 @@
                 <div style="padding: 14px;height:40px">
                   <span class="text_ellipsis video_title">{{ item.title }}</span>
                   <div class="bottom clearfix">
+                    <el-button
+                      type="text"
+                      class="button"
+                      @click="updateOneRecommendHandle(item.id)"
+                    >修改</el-button>
                     <time class="time">{{ item.time | date }}</time>
                     <el-button
                       type="text"
@@ -68,9 +71,8 @@
           <el-row v-if="myCookbook.length == 0">
             <h4>没有发现我的菜谱，发去发布吧！</h4>
           </el-row>
-          <el-row :gutter="20" class="myrow">
-            <!-- {{myCookbook}} -->
-            <el-col :span="12" v-for="(item, index) in myCookbook" :key="index">
+          <el-row :gutter="20" class="myrow" style>
+            <el-col :span="12" v-for="(item, index) in myCookbook" :key="index" class="mycol">
               <el-card :body-style="{ padding: '0px' }">
                 <div class="cp_img">
                   <img
@@ -84,6 +86,8 @@
                 <div style="padding: 14px;">
                   <span>{{ item.name }}</span>
                   <div class="bottom clearfix">
+                    <el-button type="text" class="button" @click="updateCookbookHandle(item.id)">修改</el-button>
+
                     <time class="time text_ellipsis">{{ item.detail }}</time>
                     <el-button type="text" class="button" @click="delteCookbookHandle(item.id)">删除</el-button>
                   </div>
@@ -129,15 +133,24 @@ export default {
     onClick(name, title) {
       Toast(title);
     },
-
+    //修改视频
+    updateOneRecommendHandle(id) {
+      this.$router.push({ path: "uploadVideo", query: { Recomend_id: id } });
+    },
+    //修改菜谱
+    updateCookbookHandle(id) {
+      this.$router.push({ path: "writeCookbook", query: { Cook_id: id } });
+    },
     //删除视频
-    delteOneRecommendHandle(id) {
-      this.deleteMyOneRecommend(id);
+    async delteOneRecommendHandle(id) {
+      await this.deleteMyOneRecommend(id);
+      this.findMyRecommend(this.user_info.id);
     },
     //删除菜谱
-    delteCookbookHandle(id) {
+    async delteCookbookHandle(id) {
       console.log(id, "+++");
-      this.deleteMyCookbook(id);
+      await this.deleteMyCookbook(id);
+      this.findMyCookbook(this.user_info.id);
     },
     //跳到步骤表钟取
     goPractice(id) {
@@ -152,20 +165,20 @@ export default {
   created() {
     this.findUserById();
     //查找我的视频
-    this.findMyRecommend(this.user_info[0].id);
+    this.findMyRecommend(this.user_info.id);
     //查找我的菜谱
-    this.findMyCookbook(this.user_info[0].id);
+    this.findMyCookbook(this.user_info.id);
   }
 };
 </script>
 <style scoped>
-.userInfo {
+#userInfo {
   width: 100%;
   position: absolute;
   top: 0;
   bottom: 0;
   background-color: white;
-  z-index: 100;
+  z-index: 101;
 }
 
 .top img {
@@ -190,7 +203,7 @@ export default {
 .time {
   font-size: 13px;
   max-height: 0.9rem;
-  text-indent: 2em;
+  /* text-indent: 2em; */
   color: #999;
   flex: 4;
 }
@@ -208,7 +221,13 @@ export default {
 .mycart {
   margin-bottom: 1rem;
 }
-
+.myrow {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.mycol {
+  padding-bottom: 10px;
+}
 .button {
   padding: 0;
   float: right;
@@ -231,6 +250,10 @@ export default {
   /* height: 10rem; */
   width: 100%;
   display: block;
+}
+.mp4 {
+  height: 8rem;
+  /* overflow: hidden; */
 }
 .cp_img {
   height: 150px;

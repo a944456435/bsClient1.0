@@ -18,7 +18,7 @@ export default {
   },
   actions: {
     async findAllCategory({ commit, dispath }) {
-      const response = await get("/api/category/findAll");
+      const response = await get("/category/findAll");
       commit("refreshCategorys", response.data);
       //为了解决单页面数据刷新丢失，把数据存到seesionStorage中
       // setSession("categorys", JSON.stringify(response.data));
@@ -27,7 +27,7 @@ export default {
       return response;
     },
     async findCategoryById({ commit }, id) {
-      let response = await get("/api/category/findById", id);
+      let response = await get("/category/findById", id);
       commit("SET_detailCategory", response);
       console.log("category---", response);
       return response;

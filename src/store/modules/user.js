@@ -24,7 +24,7 @@ export default {
   },
   actions: {
     async login({ commit }, payload) {
-      let response = await post("/api/user/login", payload);
+      let response = await post("/user/login", payload);
 
       console.log("登陆状态：", response.status);
       console.log("登陆者信息：", response.data[0]);
@@ -34,35 +34,35 @@ export default {
       return response;
     },
     async logout({ commit }) {
-      let response = await get("/api/user/logout");
+      let response = await get("/user/logout");
       console.log("logout", response);
       commit("SET_loginStatus", false);
       return response;
     },
     async isLogin({ commit }) {
       console.log("hello");
-      let response = await get("/api/user/findById");
-      console.log("user.js----isLogin status", response.status);
-
+      let response = await get("/user/findById");
+      console.log("user.js----isLogin status", response);
+      commit("SET_user_info", response.data[0]);
       commit("SET_loginStatus", response.status == 200 ? true : false);
       return response;
     },
     async registOrUpdate({ commit }, payload) {
-      let response = await post("/api/user/saveOrUpdate", payload);
+      let response = await post("/user/saveOrUpdate", payload);
       console.log("注册", response);
       return response;
     },
     //查看当前登陆者信息
     async findUserById({ commit }) {
-      let response = await get("/api/user/findById");
-      console.log("/api/user/findById", response.data);
-      commit("SET_user_info", response.data);
+      let response = await get("/user/findById");
+      console.log("/user/findById", response);
+      commit("SET_user_info", response.data[0]);
       return response;
     },
     // 查看未登陆用户信息
     async getUserById({ commit }, id) {
-      let response = await get("/api/user/findUserById", { id });
-      console.log("/api/user/findUserById", response.data);
+      let response = await get("/user/findUserById", { id });
+      console.log("/user/findUserById", response.data);
       commit("SET_otherInfo", response.data);
       return response;
     },

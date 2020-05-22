@@ -79,8 +79,10 @@ export default {
   background-color: white;
   z-index: 100;
 }
+
 .container {
   background-color: #f2f2f2;
+  position: absolute;
 }
 .component {
   margin: 1rem 0;

@@ -4,7 +4,7 @@
       <van-nav-bar title="修改地址" left-arrow @click-left="goBack" />
     </van-row>
     <van-row class="mycontent">
-      <h3 v-if="list.length==0">您暂时地址信息</h3>
+      <h3 v-if="list.length==0">你暂时没有地址信息</h3>
       <!-- {{allAddress}} -->
       <!-- <p>{{chosenAddressId}}</p> -->
       <van-address-list
@@ -18,7 +18,6 @@
       <!-- 新增配送信息的抽屉 -->
       <van-action-sheet v-model="isShow" title="新增收货地址">
         <div class="content">
-          内容{{searchResult}}
           <van-address-edit
             :area-list="areaList"
             show-delete
@@ -38,6 +37,7 @@
 <script>
 import areaList from "../utils/areaList";
 import { mapActions, mapState, mapMutations } from "vuex";
+import { Toast } from "vant";
 export default {
   data() {
     return {
@@ -63,7 +63,7 @@ export default {
       this.isShow = true;
     },
     onEdit(item, index) {
-      //   Toast("编辑地址:" + index);
+      Toast("暂不支持修改");
     },
     onSave(data) {
       console.log(data);
@@ -85,7 +85,11 @@ export default {
         address
       };
       console.log("payload--", payload);
-      this.saveOrUpdateAddress(payload).then(() => {});
+      this.saveOrUpdateAddress(payload).then(() => {
+        Toast("新增地址成功！");
+        this.getAllAddress();
+        this.isShow = false;
+      });
     },
     toupdateAddress() {},
     onDelete() {
@@ -119,9 +123,7 @@ export default {
   background-color: white;
   z-index: 100;
 }
-.content {
-  /* padding: 16px 16px 160px; */
-}
+
 .mycontent {
   position: absolute;
   top: 46px;
@@ -140,7 +142,6 @@ export default {
   background-color: white;
 }
 .selectAddress > .van-col:first-child {
-  /* text-align: center; */
   font-size: 30px;
 }
 </style>>

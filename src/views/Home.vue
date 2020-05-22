@@ -34,16 +34,16 @@
     <!-- 轮播图 -->
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
       <van-swipe-item>
-        <img src="@/assets/1l.jpeg" />
+        <img src="../assets/1l.jpeg" />
       </van-swipe-item>
       <van-swipe-item>
-        <img src="@/assets/2l.jpg" />
+        <img src="../assets/2l.jpg" />
       </van-swipe-item>
       <van-swipe-item>
-        <img src="@/assets/3l.jpeg" />
+        <img src="../assets/3l.jpeg" />
       </van-swipe-item>
       <van-swipe-item>
-        <img src="@/assets/x3.jpg" />
+        <img src="../assets/x3.jpg" />
       </van-swipe-item>
     </van-swipe>
     <!-- 最新通知 -->
@@ -75,7 +75,12 @@
         <div v-else-if="item == '同城'">
           <whq-SameCity></whq-SameCity>
         </div>
-        <div v-else-if="item == '宅家防疫'">宅家防疫</div>
+        <div v-else-if="item == '宅家防疫'">
+          <div class="zjfy">
+            <img src="http://q9ar0mmzo.bkt.clouddn.com/yq1.jpg" />
+            <img src="http://q9ar0mmzo.bkt.clouddn.com/yq2.jpg" />
+          </div>
+        </div>
       </van-tab>
     </van-tabs>
   </div>
@@ -226,5 +231,13 @@ export default {
 }
 .cp whq-CookBook {
   flex: 1;
+}
+.zjfy > img:first-child {
+  width: 100%;
+  height: 200px;
+}
+.zjfy > img:last-child {
+  width: 100%;
+  height: 500px;
 }
 </style>

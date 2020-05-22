@@ -18,7 +18,7 @@
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
         >
-          <img v-if="imageUrl" :src="user_info[0].photo" class="avatar" />
+          <img v-if="imageUrl" :src="user_info.photo" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon icon-push"></i>
         </el-upload>
         <i style="font-size:.8rem">点击更换头像</i>
@@ -240,7 +240,7 @@ export default {
     ...mapState("user", ["user_info"])
   },
   methods: {
-    ...mapActions("user", ["registOrUpdate"]),
+    ...mapActions("user", ["registOrUpdate", "findUserById"]),
     goBack() {
       this.$router.go(-1);
     },
@@ -251,7 +251,7 @@ export default {
     toSave() {
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
-          this.form.id = this.user_info[0].id;
+          this.form.id = this.user_info.id;
           console.log("表单的数据", this.form);
           this.registOrUpdate(this.form);
           Toast("修改成功！");
@@ -263,23 +263,23 @@ export default {
     },
 
     //图片上传成功回调
-    handleAvatarSuccess(res, file) {
+    async handleAvatarSuccess(res, file) {
       console.log("success upload");
-      this.imageUrl = URL.createObjectURL(file.raw);
-      //   this.videoURL = file.data[0].url;
-      console.log("上传成功的视频地址", res.data[0].url);
+      this.imageUrl = await URL.createObjectURL(file.raw);
+      console.log("上传成功的地址", res.data[0].url);
       //把当前预览的头像换成上传成功的
       this.imageUrl = res.data[0].url;
       //把上传成功后的头像放进数据库，执行用户修改操作
       this.form.photo = this.imageUrl;
       this.toSave();
+      this.findUserById();
     }
   },
   created() {
-    this.imageUrl = this.user_info[0].photo;
+    this.imageUrl = this.user_info.photo || "";
     //把用户信息放到表单中初始化显示，重复密码也要放进去
-    this.form = this.user_info[0];
-    this.form.checkPass = this.user_info[0].password;
+    this.form = this.user_info;
+    this.form.checkPass = this.user_info.password;
   }
 };
 </script>
@@ -295,6 +295,7 @@ export default {
   z-index: 100;
   background-color: #f0f0f4;
 }
+
 .avatar-uploader {
   width: 3rem;
   height: 3rem;
